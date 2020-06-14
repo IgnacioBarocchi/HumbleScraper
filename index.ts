@@ -1,4 +1,5 @@
 import { multiUrlGenerator } from "./lib/multiUrlGenerator";
+import * as request from "request";
 
 const clientUI = require("readline").createInterface({
   input: process.stdin,
@@ -50,4 +51,17 @@ clientUI.question("type <website>, <routes> => ", function (userInput: string) {
     arrayOfObjectsFactory(websiteAndPath)
   );
   console.log(requestedUrl);
+  getRequest();
 });
+
+function getRequest() {
+  request(requestedUrl, (err, response) => {
+    if (!err && response.statusCode == 200) {
+      console.log("okay: ", response.statusCode);
+    } else if (!response.statusCode) {
+      console.log("no response: ", response.statusCode);
+    } else {
+      console.log("no: ", response.statusCode);
+    }
+  });
+}
