@@ -1,4 +1,4 @@
-import { urlGen } from "./urlBuilder";
+import { urlBuilder } from "./urlBuilder";
 
 const clientUI = require("readline").createInterface({
   input: process.stdin,
@@ -6,9 +6,9 @@ const clientUI = require("readline").createInterface({
 });
 
 clientUI.question("Choose a word >", function (userInput: string) {
-  urlGen.words.push(userInput.trim());
+  urlBuilder.words.push(userInput.trim());
   const requestedUrl = encodeURI(
-    urlGen.path.build(urlGen.words[urlGen.words.length - 1])
+    urlBuilder.path.build(urlBuilder.words[urlBuilder.words.length - 1])
   );
   console.log(requestedUrl);
 });
