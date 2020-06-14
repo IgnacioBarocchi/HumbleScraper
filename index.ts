@@ -1,5 +1,6 @@
 import { multiUrlGenerator } from "./lib/multiUrlGenerator";
 import * as request from "request";
+import * as cheerio from "cheerio";
 
 const clientUI = require("readline").createInterface({
   input: process.stdin,
@@ -55,9 +56,13 @@ clientUI.question("type <website>, <routes> => ", function (userInput: string) {
 });
 
 function getRequest() {
-  request(requestedUrl, (err, response) => {
+  request(requestedUrl, (err, response,html) => {
+    const $$$ = cheerio.load(html);
     if (!err && response.statusCode == 200) {
-      console.log("okay: ", response.statusCode);
+      $$$(".floatright").each((i, el) => {
+        let item = $$$(el);
+
+      });
     } else if (!response.statusCode) {
       console.log("no response: ", response.statusCode);
     } else {
