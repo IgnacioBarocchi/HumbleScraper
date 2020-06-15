@@ -5,10 +5,8 @@ const clientUI = require("readline").createInterface({
   output: process.stdout,
 });
 
-clientUI.question("Choose a word >", function (userInput: string) {
-  urlBuilder.words.push(userInput.trim());
-  const requestedUrl = encodeURI(
-    urlBuilder.path.build(urlBuilder.words[urlBuilder.words.length - 1])
-  );
+clientUI.question("args:baseUrl,route >", function (userInput: string) {
+  const args: string[] = userInput.split(",");
+  const requestedUrl = urlBuilder(args[0].trim(), encodeURI(args[1].trim()));
   console.log(requestedUrl);
 });
