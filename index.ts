@@ -25,19 +25,31 @@ function arrayOfObjectsFactory(wnp: string[]) {
   let arrayOfObjects: { $home: string; $name: string }[] = new Array().fill(
     null
   );
-  for (let i = 0; i < wnp.length / 2; i++) {
-    arrayOfObjects.push(
-      new Url(wnp[i], wnp[wnp.length / 2 + i]).createObject()
-    );
-  }
+  wnp.forEach(function (item: string, index: number) {
+    if (index < wnp.length / 2) {
+      arrayOfObjects.push(
+        new Url(wnp[index], wnp[wnp.length / 2 + index]).createObject()
+      );
+    } else {
+      return;
+    }
+  });
   return arrayOfObjects;
 }
 
 clientUI.question("type <website>, <routes> => ", function (userInput: string) {
   const websiteAndPath: string[] = new Array()
     .fill(null)
-    .concat(userInput.split(",").filter((a, i) => i % 2 === 0))
-    .concat(userInput.split(",").filter((a, i) => i % 2 !== 0));
+    .concat(
+      userInput
+        .split(",")
+        .filter((item: string, index: number) => index % 2 === 0)
+    )
+    .concat(
+      userInput
+        .split(",")
+        .filter((item: string, index: number) => index % 2 !== 0)
+    );
   const requestedUrl = multiUrlGenerator(
     "http://$home/$name",
     arrayOfObjectsFactory(websiteAndPath)
