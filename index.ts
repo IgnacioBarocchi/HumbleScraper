@@ -5,19 +5,14 @@ const clientUI = require("readline").createInterface({
   output: process.stdout,
 });
 
-class Url {
-  $home: string;
-  $name: string;
-  constructor($home: string, $name: string) {
-    this.$home = $home;
-    this.$name = $name;
-  }
-  createObject(): any {
-    return {
-      $home: this.$home,
-      $name: this.$name,
-    };
-  }
+function createObject(
+  home: string,
+  name: string
+): { $home: string; $name: string } {
+  return {
+    $home: home,
+    $name: name,
+  };
 }
 
 function arrayOfObjectsFactory(wnp: string[]) {
@@ -28,7 +23,7 @@ function arrayOfObjectsFactory(wnp: string[]) {
   wnp.forEach(function (item: string, index: number) {
     if (index < wnp.length / 2) {
       arrayOfObjects.push(
-        new Url(wnp[index], wnp[wnp.length / 2 + index]).createObject()
+        createObject(wnp[index], wnp[wnp.length / 2 + index])
       );
     } else {
       return;
