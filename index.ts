@@ -51,22 +51,37 @@ clientUI.question("type <website>, <routes> => ", function (userInput: string) {
     "http://$home/$name",
     arrayOfObjectsFactory(websiteAndPath)
   );
-  console.log(requestedUrl);
-  getRequest();
-});
-
-function getRequest() {
-  request(requestedUrl, (err, response,html) => {
-    const $$$ = cheerio.load(html);
-    if (!err && response.statusCode == 200) {
-      $$$(".floatright").each((i, el) => {
-        let item = $$$(el);
-
-      });
-    } else if (!response.statusCode) {
-      console.log("no response: ", response.statusCode);
+  wnp.forEach(function (item: string, index: number) {
+    if (index < wnp.length / 2) {
+      arrayOfObjects.push(
+        new Url(wnp[index], wnp[wnp.length / 2 + index]).createObject()
+      );
     } else {
-      console.log("no: ", response.statusCode);
+      return;
     }
   });
+  // return arrayOfObjects;
 }
+
+
+
+
+clientUI.question("type <website>, <routes> => ", function (userInput: string) {
+  const websiteAndPath: string[] = new Array()
+    .fill(null)
+    .concat(
+      userInput
+        .split(",")
+        .filter((item: string, index: number) => index % 2 === 0)
+    )
+    .concat(
+      userInput
+        .split(",")
+        .filter((item: string, index: number) => index % 2 !== 0)
+    );
+  const requestedUrl = multiUrlGenerator(
+    "http://$home/$name",
+    arrayOfObjectsFactory(websiteAndPath)
+  );
+  requestedUrl.forEach((item, index, array) => getRequest(array[index]));
+});
