@@ -1,6 +1,5 @@
 import { multiUrlGenerator } from "./lib/multiUrlGenerator";
 import * as request from "request";
-import * as cheerio from "cheerio";
 
 const clientUI = require("readline").createInterface({
   input: process.stdin,
