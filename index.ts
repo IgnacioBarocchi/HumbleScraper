@@ -1,4 +1,4 @@
-import { multiUrlGenerator } from "./multiUrlGenerator";
+import { multiUrlGenerator } from "./lib/multiUrlGenerator";
 
 const clientUI = require("readline").createInterface({
   input: process.stdin,
