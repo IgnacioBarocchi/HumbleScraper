@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "testw": "jest --watch",
     "tsc": "tsc"
   },
   "repository": {
