@@ -1,5 +1,5 @@
-import { multiUrlGenerator } from "./lib/multiUrlGenerator";
-import readline from "readline";
+import { multiUrlGenerator } from './lib/multiUrlGenerator';
+import readline from 'readline';
 
 const clientUI = readline.createInterface({
   input: process.stdin,
@@ -8,7 +8,7 @@ const clientUI = readline.createInterface({
 
 function createObject(
   home: string,
-  name: string
+  name: string,
 ): { $home: string; $name: string } {
   return {
     $home: home,
@@ -23,7 +23,7 @@ function arrayOfObjectsFactory(wnp: string[]) {
   wnp.forEach(function (item: string, index: number) {
     if (index < wnp.length / 2) {
       arrayOfObjects.push(
-        createObject(wnp[index], wnp[wnp.length / 2 + index])
+        createObject(wnp[index], wnp[wnp.length / 2 + index]),
       );
     } else {
       return;
@@ -32,23 +32,23 @@ function arrayOfObjectsFactory(wnp: string[]) {
   return arrayOfObjects;
 }
 
-clientUI.question("type <website>, <routes> => ", function (userInput: string) {
+clientUI.question('type <website>, <routes> => ', function (userInput: string) {
   const websiteAndPath: string[] = []
     // @ts-ignore
     .fill(null)
     .concat(
       userInput
-        .split(",")
-        .filter((item: string, index: number) => index % 2 === 0)
+        .split(',')
+        .filter((item: string, index: number) => index % 2 === 0),
     )
     .concat(
       userInput
-        .split(",")
-        .filter((item: string, index: number) => index % 2 !== 0)
+        .split(',')
+        .filter((item: string, index: number) => index % 2 !== 0),
     );
   const requestedUrl = multiUrlGenerator(
-    "http://$home/$name",
-    arrayOfObjectsFactory(websiteAndPath)
+    'http://$home/$name',
+    arrayOfObjectsFactory(websiteAndPath),
   );
   console.log(requestedUrl);
 });
