@@ -1,6 +1,7 @@
 import { multiUrlGenerator } from "./lib/multiUrlGenerator";
+import readline from "readline";
 
-const clientUI = require("readline").createInterface({
+const clientUI = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
@@ -17,9 +18,8 @@ function createObject(
 
 function arrayOfObjectsFactory(wnp: string[]) {
   //The left side of this array contains the names of the websites and the right side contains the names of the paths.
-  let arrayOfObjects: { $home: string; $name: string }[] = new Array().fill(
-    null
-  );
+  // @ts-ignore
+  const arrayOfObjects: { $home: string; $name: string }[] = [].fill(null);
   wnp.forEach(function (item: string, index: number) {
     if (index < wnp.length / 2) {
       arrayOfObjects.push(
@@ -33,7 +33,8 @@ function arrayOfObjectsFactory(wnp: string[]) {
 }
 
 clientUI.question("type <website>, <routes> => ", function (userInput: string) {
-  const websiteAndPath: string[] = new Array()
+  const websiteAndPath: string[] = []
+    // @ts-ignore
     .fill(null)
     .concat(
       userInput
