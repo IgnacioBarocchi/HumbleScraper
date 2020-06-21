@@ -1,4 +1,5 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
+import { getRequest } from './lib/request';
 import readline from 'readline';
 
 const clientUI = readline.createInterface({
@@ -44,11 +45,11 @@ clientUI.question('type <website>, <routes> => ', function (userInput: string) {
     .concat(
       userInput
         .split(',')
-        .filter((item: string, index: number) => index % 2 !== 0),
+                                                                                                  .filter((item: string, index: number) => index % 2 !== 0),
     );
   const requestedUrl = multiUrlGenerator(
     'http://$home/$name',
     arrayOfObjectsFactory(websiteAndPath),
   );
-  console.log(requestedUrl);
+  requestedUrl.forEach((item, index, array) => getRequest(array[index]));
 });
