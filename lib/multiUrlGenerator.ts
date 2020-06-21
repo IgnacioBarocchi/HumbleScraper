@@ -1,6 +1,9 @@
 type Component = { [replaceableKey: string]: string };
 
-export const multiUrlGenerator = (fullPath: string, components: {}[]) => {
+export const multiUrlGenerator = (
+  fullPath: string,
+  components: Component[],
+): string[] => {
   // Map each of the components to a URL
   return components.map((component: Component) => {
     const urlReplaceableKeys = Object.keys(component);
@@ -8,7 +11,7 @@ export const multiUrlGenerator = (fullPath: string, components: {}[]) => {
     const replaceKeys = (path: string, replaceableKey: string) => {
       return path.replace(
         replaceableKey,
-        encodeURIComponent(component[replaceableKey])
+        encodeURIComponent(component[replaceableKey]),
       );
     };
     // Reduce the component object into a fully replaced path
