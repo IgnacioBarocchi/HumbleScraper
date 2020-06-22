@@ -19,7 +19,7 @@ describe('library', () => {
     const input = 'lol';
     // @ts-ignore
     expect(() => multiUrlGenerator('http://$home/$name', input)).toThrow(
-      TypeError,
+      TypeError
     );
   });
 });
