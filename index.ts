@@ -1,6 +1,8 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
-import { getRequest } from './lib/request';
+import { responseHandler } from './lib/requestHelper';
 import readline from 'readline';
+// eslint-disable-line
+const request = require('request');
 
 const clientUI = readline.createInterface({
   input: process.stdin,
@@ -34,7 +36,7 @@ function arrayOfObjectsFactory(wnp: string[]) {
 }
 
 clientUI.question('type <website>, <routes> => ', function (userInput: string) {
-  const websiteAndPath: string[] = []
+  const websiteAndPath: string[] = ['']
     // @ts-ignore
     .fill(null)
     .concat(
@@ -45,11 +47,16 @@ clientUI.question('type <website>, <routes> => ', function (userInput: string) {
     .concat(
       userInput
         .split(',')
-                                                                                                  .filter((item: string, index: number) => index % 2 !== 0),
+        .filter((item: string, index: number) => index % 2 !== 0),
     );
   const requestedUrl = multiUrlGenerator(
     'http://$home/$name',
     arrayOfObjectsFactory(websiteAndPath),
   );
-  requestedUrl.forEach((item, index, array) => getRequest(array[index]));
+  // requestedUrl.forEach((item, index, array) => getRequest(array[index]));
+
+  console.log(
+    request('https://es.wikipedia.org/wiki/Los_simuladores', responseHandler)
+      .uri.href,
+  );
 });
