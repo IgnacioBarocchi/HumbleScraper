@@ -1,6 +1,6 @@
 export const responseHandler = (
   error: string | undefined | null,
-  response: { statusCode: number },
+  response: { statusCode: number }
 ): void => {
   if (!error && response.statusCode === 200) {
     console.log('OK');

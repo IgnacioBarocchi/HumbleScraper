@@ -1,8 +1,7 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import { responseHandler } from './lib/requestHelper';
 import readline from 'readline';
-// eslint-disable-line
-const request = require('request');
+import request from 'request';
 
 const clientUI = readline.createInterface({
   input: process.stdin,
@@ -57,6 +56,6 @@ clientUI.question('type <website>, <routes> => ', function (userInput: string) {
 
   console.log(
     request('https://es.wikipedia.org/wiki/Los_simuladores', responseHandler)
-      .uri.href,
+      .uri.href
   );
 });
