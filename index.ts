@@ -1,31 +1,29 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch from 'node-fetch';
-
+import console from 'console';
+import { wikipediaTransformer } from './config/parsers/wikipedia.parser';
 // Test fetching Wiki articles
-const requestUrls = multiUrlGenerator(
-  'https://$lang.wikipedia.org/wiki/$article',
-  [
-    { $lang: 'en', $article: 'Plato' },
-    { $lang: 'es', $article: 'Aristóteles' },
-  ]
-);
+const PATH = './config/url_components/wikipedia.urls.js';
+
+async function wikipediaUrls() {
+  const requestUrls = multiUrlGenerator(
+    await import(PATH).then((jsonFile) => jsonFile.linkto.json()),
+    await import(PATH).then((jsonFile) => jsonFile.components.json())
+  );
+  return requestUrls;
+}
 
 async function main() {
-  for (const url of requestUrls) {
+  for (const url of await wikipediaUrls()) {
     try {
       const response = await fetch(url);
-      console.log(
-        `Called url: ${url} - with response status:`,
-        response.status
-      );
+      wikipediaTransformer(response.body);
     } catch (err) {
       console.warn(err);
     }
   }
   process.exit(0);
 }
-
-console.log('Urls:', requestUrls);
 
 // Run program
 main();
