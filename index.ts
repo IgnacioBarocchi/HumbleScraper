@@ -14,7 +14,10 @@ async function main() {
   for (const url of requestUrls) {
     try {
       const response = await fetch(url);
-      console.log(response.status);
+      console.log(
+        `Called url: ${url} - with response status:`,
+        response.status
+      );
     } catch (err) {
       console.warn(err);
     }
