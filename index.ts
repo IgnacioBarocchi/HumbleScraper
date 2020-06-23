@@ -1,54 +1,31 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
-import readline from 'readline';
+import fetch from 'node-fetch';
 
-const clientUI = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+// Test fetching Wiki articles
+const requestUrls = multiUrlGenerator(
+  'https://$lang.wikipedia.org/wiki/$article',
+  [
+    { $lang: 'en', $article: 'Plato' },
+    { $lang: 'es', $article: 'Aristóteles' },
+  ]
+);
 
-function createObject(
-  home: string,
-  name: string
-): { $home: string; $name: string } {
-  return {
-    $home: home,
-    $name: name,
-  };
-}
-
-function arrayOfObjectsFactory(wnp: string[]) {
-  //The left side of this array contains the names of the websites and the right side contains the names of the paths.
-  // @ts-ignore
-  const arrayOfObjects: { $home: string; $name: string }[] = [].fill(null);
-  wnp.forEach(function (item: string, index: number) {
-    if (index < wnp.length / 2) {
-      arrayOfObjects.push(
-        createObject(wnp[index], wnp[wnp.length / 2 + index])
+async function main() {
+  for (const url of requestUrls) {
+    try {
+      const response = await fetch(url);
+      console.log(
+        `Called url: ${url} - with response status:`,
+        response.status
       );
-    } else {
-      return;
+    } catch (err) {
+      console.warn(err);
     }
-  });
-  return arrayOfObjects;
+  }
+  process.exit(0);
 }
 
-clientUI.question('type <website>, <routes> => ', function (userInput: string) {
-  const websiteAndPath: string[] = []
-    // @ts-ignore
-    .fill(null)
-    .concat(
-      userInput
-        .split(',')
-        .filter((item: string, index: number) => index % 2 === 0)
-    )
-    .concat(
-      userInput
-        .split(',')
-        .filter((item: string, index: number) => index % 2 !== 0)
-    );
-  const requestedUrl = multiUrlGenerator(
-    'http://$home/$name',
-    arrayOfObjectsFactory(websiteAndPath)
-  );
-  console.log(requestedUrl);
-});
+console.log('Urls:', requestUrls);
+
+// Run program
+main();
