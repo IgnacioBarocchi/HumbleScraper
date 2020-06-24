@@ -1,0 +1,10 @@
+{
+  "linkto": "mojang.com/$page",
+  "components": [
+    { "$page": "home" },
+    { "$page": "about" },
+    { "$page": "games" },
+    { "$page": "account" },
+    { "$page": "help" }
+  ]
+}

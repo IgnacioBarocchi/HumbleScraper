@@ -1,23 +1,31 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch from 'node-fetch';
+import console from 'console';
+import { wikipediaTransformer } from './config/parsers/wikipedia.parser';
+const PATH = './config/url_components/';
 
-// Test fetching Wiki articles
-const requestUrls = multiUrlGenerator(
-  'https://$lang.wikipedia.org/wiki/$article',
-  [
-    { $lang: 'en', $article: 'Plato' },
-    { $lang: 'es', $article: 'Aristóteles' },
-  ]
-);
+async function getUrls(file: string) {
+  const requestUrls = multiUrlGenerator(
+    await import(PATH + file)
+      .then((jsonFile) => jsonFile)
+      .then((data) => data.linkto),
+
+    await import(PATH + file)
+      .then((jsonFile) => jsonFile)
+      .then((data) => data.components)
+  );
+
+  return new Promise<string[]>((resolve, reject) => {
+    resolve(requestUrls);
+    reject('no files found');
+  });
+}
 
 async function main() {
-  for (const url of requestUrls) {
+  for (const url of await getUrls('wikipedia.urls.json').then((x) => x)) {
     try {
-      const response = await fetch(url);
-      console.log(
-        `Called url: ${url} - with response status:`,
-        response.status
-      );
+      const response = await fetch(decodeURIComponent('https://' + url));
+      wikipediaTransformer(response.body);
     } catch (err) {
       console.warn(err);
     }
@@ -25,7 +33,4 @@ async function main() {
   process.exit(0);
 }
 
-console.log('Urls:', requestUrls);
-
-// Run program
 main();
