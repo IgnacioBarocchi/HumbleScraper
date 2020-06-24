@@ -24,8 +24,8 @@ async function getUrls(file: string) {
 async function main() {
   for (const url of await getUrls('wikipedia.urls.json').then((x) => x)) {
     try {
-      const response = await fetch(decodeURIComponent('https://' + url));
-      wikipediaTransformer(response.body);
+      const response = await fetch('https://' + url);
+      wikipediaTransformer(response);
     } catch (err) {
       console.warn(err);
     }
