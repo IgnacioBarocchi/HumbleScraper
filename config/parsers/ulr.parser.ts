@@ -1,4 +1,4 @@
-export const wikipediaTransformer = function (res: {
+export const generalTransformer = function (res: {
   url: string;
   status: number;
   statusText: string;

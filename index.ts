@@ -1,8 +1,10 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch from 'node-fetch';
 import console from 'console';
-import { wikipediaTransformer } from './config/parsers/wikipedia.parser';
+import yargs from 'yargs';
+import { generalTransformer } from './config/parsers/ulr.parser';
 const PATH = './config/url_components/';
+const MODE = yargs.argv._[0];
 
 async function getUrls(file: string) {
   const requestUrls = multiUrlGenerator(
@@ -21,11 +23,11 @@ async function getUrls(file: string) {
   });
 }
 
-async function main() {
-  for (const url of await getUrls('wikipedia.urls.json').then((x) => x)) {
+async function main(mode: string) {
+  for (const url of await getUrls(`${mode}.urls.json`).then((x) => x)) {
     try {
       const response = await fetch('https://' + url);
-      wikipediaTransformer(response);
+      generalTransformer(response);
     } catch (err) {
       console.warn(err);
     }
@@ -33,4 +35,4 @@ async function main() {
   process.exit(0);
 }
 
-main();
+main(MODE);
