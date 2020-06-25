@@ -1,5 +1,5 @@
 {
-  "linkto": "mojang.com/$page",
+  "linkto": "https://mojang.com/$page",
   "components": [
     { "$page": "home" },
     { "$page": "about" },

@@ -1,6 +1,6 @@
 
 {
-  "linkto": "$lang.wikipedia.org/wiki/$article",
+  "baseTemplate": "https://$lang.wikipedia.org/wiki/$article",
   "components": [
     { "$lang": "en", "$article": "Plato" },
     { "$lang": "es", "$article": "Aristóteles" }

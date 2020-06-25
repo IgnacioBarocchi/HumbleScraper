@@ -1,4 +1,4 @@
-export const generalTransformer = function (res: {
+export default function (res: {
   url: string;
   status: number;
   statusText: string;
@@ -8,4 +8,4 @@ export const generalTransformer = function (res: {
       res.status
     }\n>response status text: ${res.statusText}\n`
   );
-};
+}

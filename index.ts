@@ -1,33 +1,37 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import console from 'console';
-import yargs from 'yargs';
-import { generalTransformer } from './config/parsers/ulr.parser';
-const PATH = './config/url_components/';
-const MODE = yargs.argv._[0];
+import { argv } from 'yargs';
+const URL_CONFIG_PATH = './config/url_components';
+const PARSER_PATH = './config/parsers/';
+type ScraperMode = 'wikipedia' | 'mojang';
+const MODES: ReadonlyArray<ScraperMode> = ['wikipedia', 'mojang'];
+const MODE = argv.mode as ScraperMode;
 
-async function getUrls(file: string) {
-  const requestUrls = multiUrlGenerator(
-    await import(PATH + file)
-      .then((jsonFile) => jsonFile)
-      .then((data) => data.linkto),
+if (!MODES.includes(MODE as ScraperMode)) {
+  console.error(`Specified scraper mode "${MODE}" not found in config files.`);
+  process.exit(0);
+}
 
-    await import(PATH + file)
-      .then((jsonFile) => jsonFile)
-      .then((data) => data.components)
-  );
+async function getUrls(configFileName: string): Promise<string[]> {
+  const urlConfig = await import(`${URL_CONFIG_PATH}/${configFileName}`);
+  return multiUrlGenerator(urlConfig.baseTemplate, urlConfig.components);
+}
 
-  return new Promise<string[]>((resolve, reject) => {
-    resolve(requestUrls);
-    reject('no files found');
-  });
+async function getParser(
+  parserFileName: string
+): Promise<(arg0: Response) => void> {
+  const parser = await import(`${PARSER_PATH}/${parserFileName}`);
+  return parser.default;
 }
 
 async function main(mode: string) {
-  for (const url of await getUrls(`${mode}.urls.json`).then((x) => x)) {
+  const parser = await getParser(`${mode}.parser.ts`);
+  const urls = await getUrls(`${mode}.urls.json`); //wikipedia.urls.json
+  for (const url of urls) {
     try {
-      const response = await fetch('https://' + url);
-      generalTransformer(response);
+      const response = await fetch(url);
+      parser(response);
     } catch (err) {
       console.warn(err);
     }
