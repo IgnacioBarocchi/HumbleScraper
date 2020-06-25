@@ -12,21 +12,27 @@ const client = readline.createInterface({
   output: process.stdout,
 });
 
-client.question('Choose the mode you want to run the program ', (MODE) => {
-  //TODO: change the question method to setPrompt()/popPromt() or reformulate the question() string to ask an actual question.
-  if (!MODES.includes(MODE as ScraperMode)) {
-    console.error(
-      `Specified scraper mode "${MODE}" not found in config files.`
-    );
-    process.exit(0);
+client.question(
+  `What mode should I use? (available modes: ${MODES.join(', ')}) `,
+  (MODE) => {
+    if (!MODES.includes(MODE as ScraperMode)) {
+      console.error(
+        `Specified scraper mode "${MODE}" not found in config files.`
+      );
+      process.exit(0);
+    }
+    main(MODE);
+    client.close();
   }
-  main(MODE);
-  client.close();
-});
+);
 
 async function getUrls(configFileName: string): Promise<string[]> {
   const urlConfig = await import(`${URL_CONFIG_PATH}/${configFileName}`);
-  return multiUrlGenerator(urlConfig.baseTemplate, urlConfig.components);
+  if (urlConfig.baseTemplate && urlConfig.components) {
+    return multiUrlGenerator(urlConfig.baseTemplate, urlConfig.components);
+  }
+  console.error('Wrong url config format');
+  process.exit(0);
 }
 
 async function getParser(
@@ -38,7 +44,7 @@ async function getParser(
 
 async function main(mode: string) {
   const parser = await getParser(`${mode}.parser.ts`);
-  const urls = await getUrls(`${mode}.urls.json`); //wikipedia.urls.json
+  const urls = await getUrls(`${mode}.urls.json`);
   for (const url of urls) {
     try {
       const response = await fetch(url);

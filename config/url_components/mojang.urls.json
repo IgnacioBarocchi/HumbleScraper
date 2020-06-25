@@ -1,5 +1,5 @@
 {
-  "linkto": "https://mojang.com/$page",
+  "baseTemplate": "https://mojang.com/$page",
   "components": [
     { "$page": "home" },
     { "$page": "about" },
