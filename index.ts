@@ -39,12 +39,11 @@ async function getParser(
   parserFileName: string
 ): Promise<(arg0: Response) => void> {
   const parser = await import(`${PARSER_PATH}/${parserFileName}`);
-  if (parser.default) {
-    return parser.default;
-  } else {
+  if (!parser.default) {
     console.warn('The imported module must have an export default statement');
-    process.exit(0);
+    process.exit(1);
   }
+  return parser.default;
 }
 
 async function main(mode: string) {
