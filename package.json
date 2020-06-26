@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/IgnacioBarocchi/HumbleScraper#readme",
   "dependencies": {
+    "firebase": "^7.15.5",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {

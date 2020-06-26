@@ -1,6 +1,31 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch, { Response } from 'node-fetch';
-import console from 'console';
+import firebase from 'firebase';
+export const firebaseConfig = {
+  apiKey: 'AIzaSyC3F48JASbrGz0Rkp-1u3dBuUhHgtpbFfI',
+  authDomain: 'etymon-ecd27.firebaseapp.com',
+  databaseURL: 'https://etymon-ecd27.firebaseio.com',
+  projectId: 'etymon-ecd27',
+  storageBucket: 'etymon-ecd27.appspot.com',
+  messagingSenderId: '463531942651',
+  appId: '1:463531942651:web:bc6c120b6122c957e4c65e',
+  measurementId: 'G-JC4Z11489D',
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+// firebase.analytics();
+
+// firebase.initializeApp({
+//   apiKey: '### FIREBASE API KEY ###',
+//   authDomain: '### FIREBASE AUTH DOMAIN ###',
+//   projectId: '### CLOUD FIRESTORE PROJECT ID ###',
+// });
+
+const db = firebase.firestore();
+
+// Add a second document with a generated ID.
+
 import readline from 'readline';
 const URL_CONFIG_PATH = './config/url_components';
 const PARSER_PATH = './config/parsers';
@@ -57,5 +82,27 @@ async function main(mode: string) {
       console.warn(err);
     }
   }
+  db.collection('testCollection')
+    .add({
+      first: 'Alan',
+      middle: 'Mathison',
+      last: 'Turing',
+      born: 1912,
+    })
+    .then(function (docRef) {
+      console.log('Document written with ID: ', docRef.id);
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error);
+    });
+
+  db.collection('testCollection')
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+      });
+    });
   process.exit(0);
 }
+//
