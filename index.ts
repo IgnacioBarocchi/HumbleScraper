@@ -1,30 +1,9 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch, { Response } from 'node-fetch';
 import console from 'console';
-import readline from 'readline';
+import { userConfig } from './client/userConfig';
 const URL_CONFIG_PATH = './config/url_components';
 const PARSER_PATH = './config/parsers';
-type ScraperMode = 'wikipedia' | 'minecraft';
-const MODES: ReadonlyArray<ScraperMode> = ['wikipedia', 'minecraft'];
-
-const client = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-client.question(
-  `What mode should I use? (available modes: ${MODES.join(', ')}) `,
-  (MODE) => {
-    if (!MODES.includes(MODE as ScraperMode)) {
-      console.error(
-        `Specified scraper mode "${MODE}" not found in config files.`
-      );
-      process.exit(0);
-    }
-    main(MODE);
-    client.close();
-  }
-);
 
 async function getUrls(configFileName: string): Promise<string[]> {
   const urlConfig = await import(`${URL_CONFIG_PATH}/${configFileName}`);
