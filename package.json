@@ -7,8 +7,7 @@
     "test": "jest",
     "testw": "jest --watch",
     "tsc": "tsc",
-    "start": "npx ts-node index.ts",
-    "scrap": "npx ts-node index.ts $HS_OPTIONS"
+    "scrap": "npx ts-node index.ts"
   },
   "repository": {
     "type": "git",

@@ -3,9 +3,9 @@ import fetch, { Response } from 'node-fetch';
 import console from 'console';
 import readline from 'readline';
 const URL_CONFIG_PATH = './config/url_components';
-const PARSER_PATH = './config/parsers/';
-type ScraperMode = 'wikipedia' | 'mojang';
-const MODES: ReadonlyArray<ScraperMode> = ['wikipedia', 'mojang'];
+const PARSER_PATH = './config/parsers';
+type ScraperMode = 'wikipedia' | 'minecraft';
+const MODES: ReadonlyArray<ScraperMode> = ['wikipedia', 'minecraft'];
 
 const client = readline.createInterface({
   input: process.stdin,
@@ -39,7 +39,12 @@ async function getParser(
   parserFileName: string
 ): Promise<(arg0: Response) => void> {
   const parser = await import(`${PARSER_PATH}/${parserFileName}`);
-  return parser.default;
+  if (parser.default) {
+    return parser.default;
+  } else {
+    console.warn('The imported module must have an export default statement');
+    process.exit(0);
+  }
 }
 
 async function main(mode: string) {
