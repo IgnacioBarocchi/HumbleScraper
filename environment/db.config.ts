@@ -1,4 +1,4 @@
-export const keys = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyC3F48JASbrGz0Rkp-1u3dBuUhHgtpbFfI',
   authDomain: 'etymon-ecd27.firebaseapp.com',
   databaseURL: 'https://etymon-ecd27.firebaseio.com',
