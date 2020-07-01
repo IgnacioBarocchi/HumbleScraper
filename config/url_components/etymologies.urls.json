@@ -1,4 +1,4 @@
 {
   "baseTemplate": "http://etimologias.dechile.net/?$word",
-  "components": [{ "$word": "miel" }, { "$word": "manzana" }]
+  "components": [{ "$word": "espada" }, { "$word": "manzana" }]
 }
