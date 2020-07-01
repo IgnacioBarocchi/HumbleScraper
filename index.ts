@@ -1,36 +1,23 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch, { Response } from 'node-fetch';
-import firebase from 'firebase';
-import { firebaseConfig } from './environment/db.config';
 import readline from 'readline';
+import {
+  push_Documents_To_DB,
+  consoleog_My_Documents_From,
+} from './lib/dbClient';
+/**/
 const URL_CONFIG_PATH = './config/url_components';
 const PARSER_PATH = './config/parsers';
-type ScraperMode = 'wikipedia' | 'minecraft';
-const MODES: ReadonlyArray<ScraperMode> = ['wikipedia', 'minecraft'];
+type ScraperMode = 'wikipedia' | 'minecraft' | 'etymologies';
+const MODES: ReadonlyArray<ScraperMode> = [
+  'wikipedia',
+  'minecraft',
+  'etymologies',
+];
 const client = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
-firebase.initializeApp(firebaseConfig);
-const etymon = firebase.firestore();
-// const citiesRef = etymon.collection('cities');
-const turingRef = etymon.collection('testCollection');
-const batch = etymon.batch();
-const testArr = [
-  {
-    first: 'Alan',
-    middle: 'Mathison',
-    last: 'Turing',
-    born: 1912,
-  },
-  {
-    first: 'Ignacio',
-    middle: 'de la cruz',
-    last: 'barocchi',
-    born: 1996,
-  },
-];
 
 function setMode() {
   client.question(
@@ -47,7 +34,8 @@ function setMode() {
     }
   );
 }
-setMode();
+// setMode();
+main('etymologies');
 
 async function getUrls(configFileName: string): Promise<string[]> {
   const urlConfig = await import(`${URL_CONFIG_PATH}/${configFileName}`);
@@ -70,42 +58,28 @@ async function getParser(
 }
 
 async function main(mode: string) {
+  let doc: [] = [];
   const parser = await getParser(`${mode}.parser.ts`);
   const urls = await getUrls(`${mode}.urls.json`);
   for (const url of urls) {
     try {
       const response = await fetch(url);
       parser(response);
+      /*^^^^^^^^^^^^^^
+       *  I'd like to save the result of the 'promise object' from the parser function
+       *  to handle the batch.commit() method that only can be called once. Here we are inside a for loop and the data can't be
+       *  pushed into an array because of its type and also I already know that I couldn't use .then().
+       *  -- batch.commit() --
+       *  You mentioned to take it as a singleton (fn)(), right? We need to execute it only when we are sure that
+       *  all the data is ready to be committed. Did I get the idea?
+       *  I guess the commit method can be called whenever and any place I need it as long as I have an instance of batch. Perhaps the async flow
+       *  can be stoped and use my methods that relate to the DB synchronously.
+       */
     } catch (err) {
       console.warn(err);
     }
   }
-  // testArr.forEach((doc) => {
-  //   batch.set(etymon.collection('testCollection').doc(), doc);
-  // });
-  // batch.commit();
-
-  const userQuery = 'Alan';
-  const snapshot = await turingRef.where('first', '==', `${userQuery}`).get();
-  if (snapshot.empty) {
-    console.log('No matching documents.');
-    return;
-  }
-
-  snapshot.forEach((doc) => {
-    console.log(doc.id, '=>', doc.data());
-  });
-
-  // etymon
-  //   .collection('testCollection')
-  //   .get()
-  //   .then((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       console.log(`${doc.id} => ${doc.data().first}`);
-  //     });
-  //   });
-
-  // process.exit(0);
+  // push_Documents_To_DB('testCollection', doc);
+  // consoleog_My_Documents_From('testCollection');
+  process.exit(0);
 }
-
-// Create a query against the collection

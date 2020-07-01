@@ -8,3 +8,4 @@ export const firebaseConfig = {
   appId: '1:463531942651:web:bc6c120b6122c957e4c65e',
   measurementId: 'G-JC4Z11489D',
 };
+//We could import and object from an environment with the keys.

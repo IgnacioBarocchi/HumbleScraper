@@ -7,7 +7,8 @@
     "test": "jest",
     "testw": "jest --watch",
     "tsc": "tsc",
-    "scrap": "npx ts-node index.ts"
+    "scrap": "npx ts-node index.ts",
+    "append": "npx ts-node index.ts >> data.txt"
   },
   "repository": {
     "type": "git",
@@ -21,10 +22,15 @@
   "homepage": "https://github.com/IgnacioBarocchi/HumbleScraper#readme",
   "dependencies": {
     "@google-cloud/firestore": "^4.0.0",
+    "@types/utf8": "^2.1.6",
+    "cheerio": "^1.0.0-rc.3",
+    "fetch-cheerio-object": "^1.3.0",
     "firebase": "^7.15.5",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.18",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.13",
     "@types/node-fetch": "^2.5.7",
