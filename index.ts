@@ -1,10 +1,10 @@
 import { multiUrlGenerator } from './lib/multiUrlGenerator';
 import fetch, { Response } from 'node-fetch';
 import readline from 'readline';
-import {
-  push_Documents_To_DB,
-  consoleog_My_Documents_From,
-} from './lib/dbClient';
+// import {
+//   push_Documents_To_DB,
+//   consoleog_My_Documents_From,
+// } from './lib/dbClient';
 /**/
 const URL_CONFIG_PATH = './config/url_components';
 const PARSER_PATH = './config/parsers';
@@ -48,7 +48,7 @@ async function getUrls(configFileName: string): Promise<string[]> {
 
 async function getParser(
   parserFileName: string
-): Promise<(arg0: Response) => void> {
+): Promise<(arg0: Response) => void | Promise<any>> {
   const parser = await import(`${PARSER_PATH}/${parserFileName}`);
   if (!parser.default) {
     console.warn('The imported module must have an export default statement');
@@ -58,13 +58,14 @@ async function getParser(
 }
 
 async function main(mode: string) {
-  let doc: [] = [];
+  // let doc: [] = [];
   const parser = await getParser(`${mode}.parser.ts`);
   const urls = await getUrls(`${mode}.urls.json`);
   for (const url of urls) {
     try {
       const response = await fetch(url);
-      parser(response);
+      const obj = await parser(response);
+      console.log(obj); // here you can replace this with array.push(obj).
       /*^^^^^^^^^^^^^^
        *  I'd like to save the result of the 'promise object' from the parser function
        *  to handle the batch.commit() method that only can be called once. Here we are inside a for loop and the data can't be
