@@ -1,31 +1,9 @@
 import { Response } from 'node-fetch';
 import cheerio from 'cheerio';
-const IGNORE_SELECTORS = [
-  'header',
-  'nav',
-  'h1',
-  'h2',
-  'input',
-  'button',
-  'img',
-  'div',
-  'section',
-  'sup',
-  'table',
-  'tbody',
-  'tr',
-  'td',
-  'blockquote',
-  'footer',
-  'font',
-];
-const IGNORE_SENTENCES = [
-  'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ',
-  'Fuentes:',
-  'MiembrosAutorizadossolamente',
-  'Avísanossitienesmásdatososiencuentrasalgúnerror',
-  'MiembrosAutorizadossolamente:',
-];
+import {
+  post_Document_To_DB,
+  consoleog_My_Documents_From,
+} from '../../lib/dbClient';
 
 function sanitized(text: string[]): string {
   return (
@@ -47,7 +25,7 @@ function toDocument(webTitle: string, webContent: string): entry {
   };
 }
 
-export default async function (response: Response): Promise<entry> {
+export default async function (response: Response) {
   const html = () => response.text();
   return html().then(function (html) {
     const $: CheerioStatic = cheerio.load(html);
@@ -60,8 +38,16 @@ export default async function (response: Response): Promise<entry> {
 
     const title = $html.find('h1').text();
     const text = $definition
-      ? $definition[0].replace('Avísanos', '').trim()
+      ? $definition[0]
+          .replace(
+            ' Avísanos si tienes más datos o si encuentras algún error.',
+            ''
+          )
+          .trim()
       : '';
-    return toDocument(title, text);
+    return post_Document_To_DB('testCollection', toDocument(title, text));
+    consoleog_My_Documents_From('testCollection');
   });
 }
+//
+//

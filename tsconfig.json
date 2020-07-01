@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "sourceMap": true /*https://code.visualstudio.com/docs/typescript/typescript-debugging*/,
+
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Basic Options */

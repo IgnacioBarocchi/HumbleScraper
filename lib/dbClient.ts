@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { firebaseConfig } from '../config/api/db.config';
-
+import type { entry } from '../config/processors/etymologies.processor';
 firebase.initializeApp(firebaseConfig);
 const etymondb = firebase.firestore();
 const turingRef = etymondb.collection('testCollection');
@@ -26,14 +26,22 @@ export const consoleog_My_Documents_From = function (
       });
     });
 };
-export const push_Documents_To_DB = function (
-  collection: string /*'testCollection'*/,
-  documents: {}[] //any /*TODO: solve this */
+
+export const post_Document_To_DB = function (
+  collection: string,
+  document: entry
 ) {
-  documents.forEach((doc /*doc:anyTODO: solve this */) => {
+  const docRef = etymondb.collection(collection).doc(document.word);
+  return docRef.set(document);
+};
+
+export const post_Array_Of_Documents_To_DB = function (
+  collection: string /*'testCollection'*/,
+  documents: entry[]
+) {
+  documents.forEach((doc: entry /*doc:anyTODO: solve this */) => {
     batch.set(etymondb.collection(collection).doc(), doc);
   });
   batch.commit();
 };
-
 /*snapshot.forEach((doc) => {console.log(doc.id, '=>', doc.data());});*/
