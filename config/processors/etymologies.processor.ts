@@ -1,20 +1,6 @@
 import { Response } from 'node-fetch';
 import cheerio from 'cheerio';
-import {
-  post_Document_To_DB,
-  consoleog_My_Documents_From,
-} from '../../lib/dbClient';
-
-function sanitized(text: string[]): string {
-  return (
-    text
-      // .join(',')
-      // .split(' ')
-      .filter(Boolean)
-      // .filter((p) => p || p != null)
-      .join(' ')
-  );
-}
+import { postDocumentToDB } from '../../lib/dbClient';
 
 export type entry = { word: string; etymology: string };
 
@@ -45,8 +31,7 @@ export default async function (response: Response) {
           )
           .trim()
       : '';
-    return post_Document_To_DB('testCollection', toDocument(title, text));
-    consoleog_My_Documents_From('testCollection');
+    return postDocumentToDB('testCollection', toDocument(title, text));
   });
 }
 //
