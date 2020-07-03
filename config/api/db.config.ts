@@ -10,4 +10,3 @@ export const firebaseConfig = {
   appId: process.env.APP_ID,
   measurementId: process.env.MEASUREMENT_ID,
 };
-//We could import and object from an environment with the keys.
