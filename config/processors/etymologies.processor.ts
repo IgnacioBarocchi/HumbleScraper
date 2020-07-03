@@ -34,6 +34,6 @@ export default function (response: Response): void {
           )
           .trim()
       : '';
-    postDocumentToDB(FIREBASE_COLLECTION_NAME, toDocument(title, text), title);
+    postDocumentToDb(FIREBASE_COLLECTION_NAME, toDocument(title, text), title);
   });
 }
