@@ -1,6 +1,7 @@
 import { Response } from 'node-fetch';
 import cheerio from 'cheerio';
-import { postDocumentToDB } from '../../lib/dbClient';
+import { postDocumentToDb } from '../../lib/dbClient';
+const FIREBASE_COLLECTION_NAME = 'etymologies';
 
 export type entry = { word: string; etymology: string };
 
@@ -11,28 +12,28 @@ function toDocument(webTitle: string, webContent: string): entry {
   };
 }
 
-export default async function (response: Response) {
+export default function (response: Response): void {
   const html = () => response.text();
-  return html().then(function (html) {
+  html().then(function (html) {
     const $: CheerioStatic = cheerio.load(html);
     const $html = $('html');
     const $definition = $html
       .find('p')
       .text()
       // match any text from <p> elements prior to "Avísanos"
-      .match(/([\s\S]*.*?)Avísanos/g);
+      .match(
+        /([\s\S]*.*?)Avísanos si tienes más datos o si encuentras algún error./g
+      );
 
     const title = $html.find('h1').text();
     const text = $definition
       ? $definition[0]
           .replace(
-            ' Avísanos si tienes más datos o si encuentras algún error.',
+            'Avísanos si tienes más datos o si encuentras algún error.',
             ''
           )
           .trim()
       : '';
-    return postDocumentToDB('testCollection', toDocument(title, text));
+    postDocumentToDB(FIREBASE_COLLECTION_NAME, toDocument(title, text), title);
   });
 }
-//
-//

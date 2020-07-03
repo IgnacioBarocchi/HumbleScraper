@@ -1,13 +1,10 @@
 import firebase from 'firebase';
 import { firebaseConfig } from '../config/api/db.config';
-//To not hardcode the type this could be a dynamic import like.
-import type { entry } from '../config/processors/etymologies.processor';
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const batch = db.batch();
+const Db = firebase.firestore();
 
-export const consoleLogMyDocumentsFrom = function (collection: string) {
-  db.collection(collection)
+export const consoleLogMyDocumentsFrom = function (collectionName: string) {
+  Db.collection(collectionName)
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
@@ -16,17 +13,11 @@ export const consoleLogMyDocumentsFrom = function (collection: string) {
     });
 };
 
-export const postDocumentToDB = function (collection: string, document: entry) {
-  const docRef = db.collection(collection).doc(document.word);
-  return docRef.set(document);
-};
-
-export const postArrayOfDocumentsToDB = function (
-  collection: string,
-  documents: entry[]
+export const postDocumentToDb = function (
+  collectionName: string,
+  document: {},
+  documentName: string
 ) {
-  documents.forEach((doc: entry) => {
-    batch.set(db.collection(collection).doc(), doc);
-  });
-  batch.commit();
+  const docRef = Db.collection(collectionName).doc(documentName);
+  return docRef.set(document);
 };

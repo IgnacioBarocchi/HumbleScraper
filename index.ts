@@ -3,7 +3,7 @@ import fetch, { Response } from 'node-fetch';
 import readline from 'readline';
 
 const URL_CONFIG_PATH = './config/url_components';
-const processor_PATH = './config/processors';
+const PROCESSOR_PATH = './config/processors';
 type ScraperMode = 'wikipedia' | 'minecraft' | 'etymologies';
 const MODES: ReadonlyArray<ScraperMode> = [
   'wikipedia',
@@ -30,8 +30,7 @@ function setMode() {
     }
   );
 }
-// setMode();
-main('etymologies');
+setMode();
 
 async function getUrls(configFileName: string): Promise<string[]> {
   const urlConfig = await import(`${URL_CONFIG_PATH}/${configFileName}`);
@@ -45,7 +44,7 @@ async function getUrls(configFileName: string): Promise<string[]> {
 async function getProcessor(
   processorFileName: string
 ): Promise<(arg0: Response) => void | Promise<any>> {
-  const processor = await import(`${processor_PATH}/${processorFileName}`);
+  const processor = await import(`${PROCESSOR_PATH}/${processorFileName}`);
   if (!processor.default) {
     console.warn('The imported module must have an export default statement');
     process.exit(1);
@@ -59,7 +58,7 @@ async function main(mode: string) {
   for (const url of urls) {
     try {
       const response = await fetch(url);
-      await processor(response);
+      processor(response);
     } catch (err) {
       console.warn(err);
     }
