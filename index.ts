@@ -61,7 +61,7 @@ async function main(mode: string) {
       const response = await fetch(url);
       await processor(response);
     } catch (err) {
-      console.warn(`>>> Error while trying to fetch ${url}`);
+      console.log(`>>> ERROR while trying to fetch ${url}`);
     }
   }
 

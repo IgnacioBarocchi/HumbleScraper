@@ -34,7 +34,7 @@ export default async function (response: Response): Promise<void> {
   const responseText = await response.textConverted();
   const $html = cheerio.load(responseText)('html');
 
-  const title = $html.find('h1').text();
+  const title = $html.find('h3').text();
   const text = getDefinition($html);
 
   if (!title || !text) {
