@@ -56,12 +56,14 @@ async function main(mode: string) {
   const processor = await getProcessor(`${mode}.processor.ts`);
   const urls = await getUrls(`${mode}.urls.json`);
   for (const url of urls) {
+    console.log(`Fetching: ${url} ...`);
     try {
       const response = await fetch(url);
-      processor(response);
+      await processor(response);
     } catch (err) {
-      console.warn(err);
+      console.warn(`>>> Error while trying to fetch ${url}`);
     }
   }
+
   process.exit(0);
 }

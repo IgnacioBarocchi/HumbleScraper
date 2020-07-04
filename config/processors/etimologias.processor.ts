@@ -1,7 +1,9 @@
 import { Response } from 'node-fetch';
 import cheerio from 'cheerio';
-import { postDocumentToDb } from '../../lib/dbClient';
+import FirebaseClient from '../../lib/FirebaseClient';
 const FIREBASE_COLLECTION_NAME = 'etymologies';
+const CUTOFF_EXPRESSION =
+  'Avísanos si tienes más datos o si encuentras \nalgún error.';
 
 export type entry = { word: string; etymology: string };
 
@@ -12,28 +14,36 @@ function toDocument(webTitle: string, webContent: string): entry {
   };
 }
 
-export default function (response: Response): void {
-  const html = () => response.text();
-  html().then(function (html) {
-    const $: CheerioStatic = cheerio.load(html);
-    const $html = $('html');
-    const $definition = $html
-      .find('p')
-      .text()
-      // match any text from <p> elements prior to "Avísanos"
-      .match(
-        /([\s\S]*.*?)Avísanos si tienes más datos o si encuentras algún error./g
-      );
+const getDefinition = ($html: Cheerio) => {
+  const definition = $html
+    .find('p')
+    .text()
+    // match any text from <p> elements prior to the cutoff expression
+    .match(new RegExp(`([\\s\\S]*.*?)${CUTOFF_EXPRESSION}`, 'g'));
 
-    const title = $html.find('h1').text();
-    const text = $definition
-      ? $definition[0]
-          .replace(
-            'Avísanos si tienes más datos o si encuentras algún error.',
-            ''
-          )
-          .trim()
-      : '';
-    postDocumentToDb(FIREBASE_COLLECTION_NAME, toDocument(title, text), title);
-  });
+  // if there's a definition, remove garbage characters and return it
+  return definition
+    ? definition[0]
+        .replace(CUTOFF_EXPRESSION, '')
+        .trim()
+        .replace(/^\s*[\r\n]/gm, '')
+    : '';
+};
+
+export default async function (response: Response): Promise<void> {
+  const responseText = await response.textConverted();
+  const $html = cheerio.load(responseText)('html');
+
+  const title = $html.find('h1').text();
+  const text = getDefinition($html);
+
+  if (!title || !text) {
+    throw new Error('Entry not found');
+  }
+
+  FirebaseClient.saveDocument(
+    FIREBASE_COLLECTION_NAME,
+    toDocument(title, text),
+    title
+  );
 }
