@@ -6,7 +6,6 @@ class FirebaseClient {
   public db: firebase.firestore.Firestore;
 
   constructor() {
-    console.log(firebaseConfig);
     firebase.initializeApp(firebaseConfig);
     this.db = firebase.firestore();
   }

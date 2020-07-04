@@ -43,7 +43,7 @@ async function getUrls(configFileName: string): Promise<string[]> {
 
 async function getProcessor(
   processorFileName: string
-): Promise<(arg0: Response) => void | Promise<any>> {
+): Promise<(arg0: Response) => void | Promise<void>> {
   const processor = await import(`${PROCESSOR_PATH}/${processorFileName}`);
   if (!processor.default) {
     console.warn('The imported module must have an export default statement');
