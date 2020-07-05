@@ -15,7 +15,9 @@ const client = readline.createInterface({
   output: process.stdout,
 });
 
-function setMode() {
+init();
+
+function init() {
   client.question(
     `What mode should I use? (available modes: ${MODES.join(', ')}) `,
     (MODE) => {
@@ -23,14 +25,23 @@ function setMode() {
         console.error(
           `Specified scraper mode "${MODE}" not found in config files.`
         );
-        return setMode();
+        process.exit(1);
       }
-      main(MODE);
-      client.close();
+
+      client.question(
+        'What should be the max numer of requests?',
+        (MAX_REQUESTS) => {
+          if (isNaN(Number(MAX_REQUESTS))) {
+            console.error('Wrong max requests number');
+            process.exit(1);
+          }
+
+          main(MODE, Number(MAX_REQUESTS));
+        }
+      );
     }
   );
 }
-setMode();
 
 async function getUrls(configFileName: string): Promise<string[]> {
   const urlConfig = await import(`${URL_CONFIG_PATH}/${configFileName}`);
@@ -52,16 +63,25 @@ async function getProcessor(
   return processor.default;
 }
 
-async function main(mode: string) {
+async function main(mode: string, maxRequests: number) {
   const processor = await getProcessor(`${mode}.processor.ts`);
   const urls = await getUrls(`${mode}.urls.json`);
+  let count = 0;
+
   for (const url of urls) {
+    if (count >= maxRequests) {
+      console.log('Reached maximum number of requests');
+      console.log('Last url (not processed):', url);
+      process.exit();
+    }
     console.log(`Fetching: ${url} ...`);
     try {
       const response = await fetch(url);
       await processor(response);
+
+      console.log(`✅ Saved #${count++}.`);
     } catch (err) {
-      console.log(`>>> ERROR while trying to fetch ${url}`);
+      console.log(`❌ERROR`, err.message);
     }
   }
 
