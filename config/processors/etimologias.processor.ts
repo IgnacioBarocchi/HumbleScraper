@@ -2,8 +2,7 @@ import { Response } from 'node-fetch';
 import cheerio from 'cheerio';
 import FirebaseClient from '../../lib/FirebaseClient';
 const FIREBASE_COLLECTION_NAME = 'etymologies';
-const CUTOFF_EXPRESSION =
-  'Avísanos si tienes más datos o si encuentras \nalgún error.';
+const CUTOFF_EXPRESSION = 'Avísanos si tienes más datos o si encuentras';
 
 export type entry = { word: string; etymology: string };
 
