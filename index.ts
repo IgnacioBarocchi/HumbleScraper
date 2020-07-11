@@ -4,11 +4,18 @@ import readline from 'readline';
 
 const URL_CONFIG_PATH = './config/url_components';
 const PROCESSOR_PATH = './config/processors';
-type ScraperMode = 'wikipedia' | 'minecraft' | 'etimologias';
+type ScraperMode =
+  | 'etimologias'
+  | 'diccionario'
+  | 'sinonimos'
+  | 'verbos'
+  | 'rimas';
 const MODES: ReadonlyArray<ScraperMode> = [
-  'wikipedia',
-  'minecraft',
   'etimologias',
+  'diccionario',
+  'sinonimos',
+  'verbos',
+  'rimas',
 ];
 const client = readline.createInterface({
   input: process.stdin,

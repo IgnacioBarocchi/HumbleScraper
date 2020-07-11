@@ -1,6 +1,0 @@
-{
-  "baseTemplate": "https://www.minecraft.net/$lang/$article",
-  "components": [
-    { "$lang": "es-es", "$article": "community" }
-  ]
-}

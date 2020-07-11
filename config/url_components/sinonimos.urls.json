@@ -1,0 +1,14 @@
+{
+  "baseTemplate": "https://sinonimos.woxikon.es/es/$word",
+  "components": [
+    { "$word": "omitir" },
+    { "$word": "ojal" },
+    { "$word": "olvido" },
+    { "$word": "operación" },
+    { "$word": "oprimir" },
+    { "$word": "ordenanza" },
+    { "$word": "origen" },
+    { "$word": "oscilante" },
+    { "$word": "pago" }
+  ]
+}
