@@ -47,6 +47,3 @@ export const diccionarioUlrGenerator = async function (): Promise<string[]> {
   }
   return generaterdUlrs;
 };
-
-diccionarioUlrGenerator();
-//list-from-to

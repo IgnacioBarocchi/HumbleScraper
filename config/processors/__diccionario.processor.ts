@@ -1,19 +1,23 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
-import { diccionarioUlrGenerator } from '../../lib/diccionarioUlrGenerator';
+import { collection } from '../url/words.urls';
 
-function sanitizedText(text: string): string {
-  const textToString = text
-    .replace(/(\r\n|\n|\r)/gm, '')
-    .split(/[ ,]+/)
-    .join('", "');
-  return textToString;
+function sanitizedText(text: string): string[] {
+  const textToArray = text.replace(/(\r\n|\n|\r)/gm, '').split(/[ ,]+/);
+  return textToArray;
 }
 
-async function extract() {
-  const urls = await diccionarioUlrGenerator();
+async function saveWords() {
+  let wordList: string[] = [];
+  //const urls = await diccionarioUlrGenerator();
+  const urls = collection;
+  //   const urls = [
+  //     'https://sinonimos.woxikon.es/es-r-14',
+  //     'https://sinonimos.woxikon.es/es-f-16',
+  //     'https://sinonimos.woxikon.es/es-g-5',
+  //   ];
   for (const url of urls) {
-    const response = await fetch(url);
+    const response = await fetch(encodeURIComponent(url.replace(/\s/g, '')));
     const responseText = await response.textConverted();
     const $html = cheerio.load(responseText)('html');
 
@@ -24,10 +28,14 @@ async function extract() {
 
     $html.find('.list-from-to').each((i, el) => {
       const item = cheerio.load(responseText)(el).text();
-      const arrayE = JSON.parse(`[${sanitizedText(item)}]`);
-      console.log(arrayE);
+      wordList = wordList.concat(
+        sanitizedText(item)
+          .filter(Boolean)
+          .filter((v: string, i: number, a: string[]) => a.indexOf(v) == i)
+      );
     });
   }
+  console.log(wordList);
 }
 
-extract();
+saveWords();

@@ -56,8 +56,6 @@ export default async function (response: Response): Promise<void> {
     return;
   }
 
-  //shortDefinition = shortDefinitionGroup;
-
   similarWords = similarWords
     .concat(sanitizedArray(inlineSimilarWords))
     .filter((e) => e !== word)
